@@ -1,11 +1,16 @@
-package com.viniciusog.organizze;
+package com.viniciusog.organizze.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
+import com.viniciusog.organizze.R;
+import com.viniciusog.organizze.activity.CadastroActivity;
+import com.viniciusog.organizze.activity.LoginActivity;
 
 public class MainActivity extends IntroActivity {
 
@@ -13,6 +18,10 @@ public class MainActivity extends IntroActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
+
+        //Removendo botãoes de avanço
+        setButtonBackVisible(false);
+        setButtonNextVisible(false);
 
         /* Configure Sliders */
         addSlide( new FragmentSlide.Builder()
@@ -34,6 +43,20 @@ public class MainActivity extends IntroActivity {
                 .background(android.R.color.white)
                 .fragment(R.layout.intro_4)
                 .build());
+
+        addSlide( new FragmentSlide.Builder()
+                .background(android.R.color.white)
+                .fragment(R.layout.intro_cadastro)
+                .canGoForward(false)
+                .build());
+    }
+
+    public void btEntrar(View view){
+        startActivity( new Intent(this, LoginActivity.class));
+    }
+
+    public void btCadastrar(View view){
+        startActivity(new Intent(this, CadastroActivity.class));
 
     }
 }
