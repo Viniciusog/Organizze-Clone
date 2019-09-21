@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ConfiguracaoFirebase {
 
-    private static FirebaseAuth autenticacao;
+    private static FirebaseAuth autenticacao = null;
 
     //Retorna a instância do FirebaseAuth
     public static FirebaseAuth getFirebaseAutenticacao() {
@@ -13,6 +13,4 @@ public class ConfiguracaoFirebase {
         }
         return autenticacao;
     }
-
-
 }
