@@ -10,6 +10,8 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
+    private Double receitaTotal = 0.00;
+    private Double despesaTotal = 0.00;
 
     public Usuario() {
 
@@ -47,6 +49,22 @@ public class Usuario {
         this.senha = senha;
     }
 
+    public Double getReceitaTotal() {
+        return receitaTotal;
+    }
+
+    public void setReceitaTotal(Double receitaTotal) {
+        this.receitaTotal = receitaTotal;
+    }
+
+    public Double getDespesaTotal() {
+        return despesaTotal;
+    }
+
+    public void setDespesaTotal(Double despesaTotal) {
+        this.despesaTotal = despesaTotal;
+    }
+
     //Ao colocar exclude o firebase não irá salvar o idUsuario no banco de dados do usuario
     @Exclude
     public String getIdUsuario() {
@@ -56,4 +74,5 @@ public class Usuario {
     public void setIdUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
     }
+
 }
