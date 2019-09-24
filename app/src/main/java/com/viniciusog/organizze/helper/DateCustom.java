@@ -9,4 +9,12 @@ public class DateCustom {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return sdf.format(new Date()).toString();
     }
+
+    public static String mesAnoDataEscolhida(String data) {
+        String retornoData[] = data.split("/");
+        String mes = retornoData[1];
+        String ano = retornoData[2];
+        String mesAno = mes + ano;
+        return mesAno;
+    }
 }
