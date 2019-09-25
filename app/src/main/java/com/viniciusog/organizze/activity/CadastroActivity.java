@@ -79,7 +79,7 @@ public class CadastroActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //idUsuario é o email do susuario em base 64
-                            String idUsuario = Base64Custom.codificarBase64( usuario.getEmail() );
+                            String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
                             usuario.setIdUsuario(idUsuario);
                             usuario.salvar();
                             finish();

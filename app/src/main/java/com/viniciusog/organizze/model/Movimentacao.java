@@ -31,7 +31,6 @@ public class Movimentacao {
                 .child(mesAno)
                 .push()
                 .setValue(this);
-
     }
 
     public String getData() {
