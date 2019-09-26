@@ -16,4 +16,6 @@
     <color name="colorPrimaryDarkReceita">#00BE8B</color>
     <color name="colorAccentReceita">#00D39E</color>
 
+    <color name ="colorTransparent">#B3FFFFFF"</color>
+
 </resources>
