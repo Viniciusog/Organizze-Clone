@@ -63,6 +63,9 @@ public class ReceitasActivity extends AppCompatActivity {
             //Salvar a movimentação no banco de dados
             movimentacao.salvar(data);
 
+            //Fecha a tela (activity)
+            finish();
+
         }
     }
 

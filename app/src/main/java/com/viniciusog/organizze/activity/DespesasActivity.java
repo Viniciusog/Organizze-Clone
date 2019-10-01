@@ -26,9 +26,9 @@ public class DespesasActivity extends AppCompatActivity {
     private TextInputEditText campoData, campoCategoria, campoDescricao;
     private EditText campoValor;
     private Movimentacao movimentacao;
-    private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+
+    private Double despesaTotal;private DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
     private FirebaseAuth autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-    private Double despesaTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,9 @@ public class DespesasActivity extends AppCompatActivity {
             atualizarDespesa(despesaAtualizada);
             //Salvar a movimentação no banco de dados
             movimentacao.salvar(data);
+
+            //Fecha a tela (activity)
+            finish();
 
         }
     }
