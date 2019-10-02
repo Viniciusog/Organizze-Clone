@@ -13,6 +13,7 @@ public class Movimentacao {
     private String descricao;
     private String tipo;
     private double valor;
+    private String key;
 
     public Movimentacao() {
 
@@ -71,5 +72,13 @@ public class Movimentacao {
 
     public void setValor(double valor) {
         this.valor = valor;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

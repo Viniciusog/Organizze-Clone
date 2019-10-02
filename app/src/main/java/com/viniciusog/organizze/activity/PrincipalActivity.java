@@ -1,5 +1,7 @@
 package com.viniciusog.organizze.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -19,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -55,6 +58,7 @@ public class PrincipalActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AdapterMovimentacao adapterMovimentacao;
     private List<Movimentacao> movimentacoes = new ArrayList<>();
+    private Movimentacao movimentacao;
     private DatabaseReference movimentacaoRef;
     private String mesAnoSelecionado;
 
@@ -83,6 +87,7 @@ public class PrincipalActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapterMovimentacao);
     }
+
     public void swipe() {
 
         ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
@@ -100,11 +105,70 @@ public class PrincipalActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+                excluirMovimentacao(viewHolder);
             }
         };
 
         new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
+    }
+
+    public void excluirMovimentacao(final RecyclerView.ViewHolder viewHolder) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Excluir movimentação da conta");
+        alert.setMessage("Deseja realmente excluir esta movimentação de sua conta?");
+        alert.setCancelable(false);
+
+        alert.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                int position = viewHolder.getAdapterPosition();
+                movimentacao = movimentacoes.get(position);
+
+                //Poderia estar em um método
+                String emailUsuario = autenticacao.getCurrentUser().getEmail();
+                String idUsuario = Base64Custom.codificarBase64(emailUsuario);
+
+                movimentacaoRef = firebaseRef.child("movimentacao")
+                        .child(idUsuario)
+                        .child(mesAnoSelecionado);
+
+                //Irá remover esta movimentação do firebase apartir da chave da movimentação informada
+                movimentacaoRef.child(movimentacao.getKey()).removeValue();
+                adapterMovimentacao.notifyItemRemoved(position);
+                atualizarSaldo();
+            }
+        });
+
+        alert.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(PrincipalActivity.this, "Cancelado", Toast.LENGTH_SHORT).show();
+                adapterMovimentacao.notifyDataSetChanged();
+            }
+        });
+
+        AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+    }
+
+    public void atualizarSaldo() {
+        //Poderia criar um método em configuração firebase que retorna o usuário logado
+        String emailUsuario = autenticacao.getCurrentUser().getEmail();
+        String idUsuario = Base64Custom.codificarBase64(emailUsuario);
+        usuarioRef = firebaseRef.child("usuarios").child(idUsuario);
+
+        if (movimentacao.getTipo().equals("r")) {
+            receitaTotal = receitaTotal - movimentacao.getValor();
+            usuarioRef.child("receitaTotal").setValue(receitaTotal);
+        }
+
+        if (movimentacao.getTipo().equals("d")) {
+            despesaTotal = despesaTotal - movimentacao.getValor();
+            usuarioRef.child("despesaTotal").setValue(despesaTotal);
+        }
+
     }
 
     public void recuperarMovimentações() {
@@ -117,7 +181,7 @@ public class PrincipalActivity extends AppCompatActivity {
                 .child(mesAnoSelecionado);
 
 
-        Log.i("dadosRetorno", "mes: "  + mesAnoSelecionado);
+        Log.i("dadosRetorno", "mes: " + mesAnoSelecionado);
 
         valueEventListenerMovimentacoes = movimentacaoRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -128,12 +192,15 @@ public class PrincipalActivity extends AppCompatActivity {
                 for (DataSnapshot dados : dataSnapshot.getChildren()) {
 
                     Movimentacao movimentacao = dados.getValue(Movimentacao.class);
+                    //Pega o id(key) da movimentação que está no firebase
+                    movimentacao.setKey(dados.getKey());
                     movimentacoes.add(movimentacao);
                 }
                 //Notificar ao adapter que os dados foram modificados
                 //Pois inicialmente configuramos no adapter a lista movimentacoes que antes era vazia
                 adapterMovimentacao.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -237,6 +304,7 @@ public class PrincipalActivity extends AppCompatActivity {
         super.onStart();
         recuperarResumo();
         recuperarMovimentações();
+        swipe();
     }
 
     @Override
